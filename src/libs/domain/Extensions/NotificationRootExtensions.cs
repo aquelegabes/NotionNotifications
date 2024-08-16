@@ -20,6 +20,53 @@ namespace NotionNotifications.Domain.Extensions
             };
         }
 
+        public static NotionResultModel ToNotionResultModel(
+            this NotificationRoot root,
+            IEnumerable<string>? updatedProperties = default)
+        {
+            Dictionary<string, object> properties = [];
+
+            SetupProperties(root, properties);
+
+            if (updatedProperties is not null
+                && updatedProperties.Any())
+            {
+                SetupUpdatedProperties(properties, updatedProperties!);
+            }
+
+            string propertiesAsJson = JsonSerializer.Serialize(properties);
+
+            return new NotionResultModel
+            {
+                Id = root.IntegrationId,
+                CreatedTime = root.CreatedAt,
+                LastEditedTime = root.LastUpdatedAt,
+                Properties = JsonNode.Parse(propertiesAsJson)
+            };
+        }
+
+        private static void SetupUpdatedProperties(
+            Dictionary<string, object> properties,
+            IEnumerable<string> updatedProperties)
+        {
+            var propertyMap = new Dictionary<string, string>
+            {
+                { nameof(NotificationRoot.Title), "Título" },
+                { nameof(NotificationRoot.AlreadyNotified), "Já Notificado?" },
+                { nameof(NotificationRoot.Categories), "Categorias" },
+                { nameof(NotificationRoot.EventDate), "Data do evento" },
+                { nameof(NotificationRoot.Occurence), "Repetição" }
+            };
+
+            foreach (var kvp in propertyMap)
+            {
+                if (!updatedProperties.Contains(kvp.Key))
+                {
+                    properties.Remove(kvp.Value);
+                }
+            }
+        }
+
         private static void SetupProperties(
             NotificationRoot root,
             Dictionary<string, object> properties)
@@ -61,22 +108,5 @@ namespace NotionNotifications.Domain.Extensions
             }
         }
 
-        public static NotionResultModel ToInsertNotionResultModel(
-            this NotificationRoot root)
-        {
-            Dictionary<string, object> properties = [];
-
-            SetupProperties(root, properties);
-
-            string propertiesAsJson = JsonSerializer.Serialize(properties);
-
-            return new NotionResultModel
-            {
-                Id = root.IntegrationId,
-                CreatedTime = root.CreatedAt,
-                LastEditedTime = root.LastUpdatedAt,
-                Properties = JsonNode.Parse(propertiesAsJson)
-            };
-        }
     }
 }
