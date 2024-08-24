@@ -1,0 +1,15 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "NotionNotifications.WorkerService": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "NOTION_DATABASEID": "YOUR_DATABASEID",
+        "NOTION_API_SECRET": "YOUR_API_SECRET",
+        "NOTION_API_VERSION": "2022-06-28"
+      }
+    }
+  }
+}

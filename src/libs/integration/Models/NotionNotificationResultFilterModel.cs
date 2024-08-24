@@ -9,6 +9,7 @@ namespace NotionNotifications.Integration.Models
         public bool AlreadyNotified { get; set; }
         public DateTimeOffset? EventDate { get; set; }
         public string[]? Categories { get; set; }
+        public ESortDirection SortBy { get; set; } = ESortDirection.Descending;
 
         private void SetupTitleFilter(List<object> andFilter)
         {
@@ -96,18 +97,20 @@ namespace NotionNotifications.Integration.Models
 
             SetupAndFilters(andFilter);
 
-            return new
+            var filter = new Dictionary<string, object>
             {
-                and = andFilter,
-                sorts = new[] {
-                    new {
-                        property = "Data do evento",
-                        direction = nameof(ESortDirection.Descending).ToLower()
-                    }
-                }.ToArray(),
-                start_cursor = startCursor,
-                page_size = pageSize
+                { "and", andFilter },
+                { "sorts", new[] {
+                        new { property = "Data do evento", direction = SortBy.ToString().ToLower() }
+                    }.ToArray()
+                },
+                { "page_size", pageSize }
             };
+
+            if (startCursor != null)
+                filter.Add("start_cursor", startCursor);
+
+            return filter;
         }
     }
 }

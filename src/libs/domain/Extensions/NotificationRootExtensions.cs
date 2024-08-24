@@ -28,8 +28,7 @@ namespace NotionNotifications.Domain.Extensions
 
             SetupProperties(root, properties);
 
-            if (updatedProperties is not null
-                && updatedProperties.Any())
+            if (updatedProperties?.Any() == true)
             {
                 SetupUpdatedProperties(properties, updatedProperties!);
             }

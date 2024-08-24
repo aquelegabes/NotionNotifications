@@ -12,7 +12,7 @@ namespace NotionNotifications.Domain.Extensions
             return new()
             {
                 IntegrationId = result.Id,
-                Id = result.Properties["ID"]["unique_id"]["number"].GetValue<int>(),
+                NotionIdProperty = result.Properties["ID"]["unique_id"]["number"].GetValue<int>(),
                 Title = result.Properties["Título"]["title"].AsArray().First()["plain_text"].GetValue<string>(),
                 AlreadyNotified = result.Properties["Já Notificado?"]["checkbox"].GetValue<bool>(),
                 Occurence = GetOccurence(result.Properties["Repetição"]["select"]["name"].GetValue<string>()),

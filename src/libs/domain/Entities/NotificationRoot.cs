@@ -14,9 +14,9 @@ public class NotificationRoot : INotifyPropertyChanged
     private ENotificationOccurence occurence = ENotificationOccurence.None;
     private IEnumerable<string> categories = [];
     #endregion Fields
-
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public Guid IntegrationId { get; set; } = Guid.Empty;
-    public int Id { get; set; }
+    public int NotionIdProperty { get; set; }
     public string Title
     { get => title; set { title = value; OnProperyChanged(); } }
     public bool AlreadyNotified
@@ -32,8 +32,10 @@ public class NotificationRoot : INotifyPropertyChanged
     public IEnumerable<string> Categories
     { get => categories; set { categories = value; OnProperyChanged(); } }
 
-
+#pragma warning disable CS8612, CS8618 // Nullability of reference types in type doesn't match implicitly implemented member.
     public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS8612, CS8618 // Nullability of reference types in type doesn't match implicitly implemented member.
+
     protected void OnProperyChanged(
         [System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
     {
