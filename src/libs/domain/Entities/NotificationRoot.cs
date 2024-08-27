@@ -14,6 +14,7 @@ public class NotificationRoot : INotifyPropertyChanged
     private ENotificationOccurence occurence = ENotificationOccurence.None;
     private IEnumerable<string> categories = [];
     #endregion Fields
+
     public string Id { get; set; } = Guid.NewGuid().ToString();
     public Guid IntegrationId { get; set; } = Guid.Empty;
     public int NotionIdProperty { get; set; }

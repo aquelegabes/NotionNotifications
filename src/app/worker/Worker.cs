@@ -23,7 +23,8 @@ public class Worker(ILogger<Worker> logger) : BackgroundService
 
             var result = notification.Show();
 
-            if (result.Shown) {
+            if (result.Shown)
+            {
                 _logger.LogInformation("Notification shown at: {time}", DateTimeOffset.Now);
                 _logger.LogInformation("Notification summary: {summary}", notification.Summary);
                 _logger.LogInformation("Notification body: {body}", notification.Body);
@@ -33,6 +34,6 @@ public class Worker(ILogger<Worker> logger) : BackgroundService
         }
     }
 
-    private static int ToMilliseconds(int seconds) 
+    private static int ToMilliseconds(int seconds)
         => seconds * 1000;
 }

@@ -13,11 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotionNotifications.NotionI
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{8BA257F8-6DC7-4662-9EE6-D742351A1A35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotionNotifications.WorkerService", "src\app\worker\NotionNotifications.WorkerService.csproj", "{4E3BC5FE-058B-40AB-ABE2-9CEBA86BD6C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotionNotifications.WorkerService", "src\app\worker\NotionNotifications.WorkerService.csproj", "{4E3BC5FE-058B-40AB-ABE2-9CEBA86BD6C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotionNotifications.External", "src\libs\external\NotionNotifications.External.csproj", "{7D5CFB6F-6E2A-4B2B-9B11-120BCBF47F12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotionNotifications.External", "src\libs\external\NotionNotifications.External.csproj", "{7D5CFB6F-6E2A-4B2B-9B11-120BCBF47F12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotionNotifications.Data", "src\libs\data\NotionNotifications.Data.csproj", "{AE1215D4-534E-4BD0-81FD-49C3732DA1BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotionNotifications.Data", "src\libs\data\NotionNotifications.Data.csproj", "{AE1215D4-534E-4BD0-81FD-49C3732DA1BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotionNotifications.Server", "src\server\NotionNotifications.Server.csproj", "{244FE88E-0066-4E1A-A968-0EE66B5D549E}"
 EndProject
@@ -167,7 +167,7 @@ Global
 		{4E3BC5FE-058B-40AB-ABE2-9CEBA86BD6C5} = {8BA257F8-6DC7-4662-9EE6-D742351A1A35}
 		{7D5CFB6F-6E2A-4B2B-9B11-120BCBF47F12} = {6EF44DF6-AE2B-47EA-BF0B-9902B47A6588}
 		{AE1215D4-534E-4BD0-81FD-49C3732DA1BA} = {6EF44DF6-AE2B-47EA-BF0B-9902B47A6588}
-		{244FE88E-0066-4E1A-A968-0EE66B5D549E} = {36684073-EF09-466C-96F0-CBC8C1167C6C}
+		{244FE88E-0066-4E1A-A968-0EE66B5D549E} = {8BA257F8-6DC7-4662-9EE6-D742351A1A35}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B3F40E55-3E1B-4BAF-8CB6-35720FCBCE9A}
