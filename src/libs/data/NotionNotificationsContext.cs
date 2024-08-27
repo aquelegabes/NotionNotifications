@@ -9,6 +9,12 @@ namespace NotionNotifications.Data
 
         public DbSet<TransactionEventRoot> TransactionEventRoots { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder opts)
+        {
+            opts.UseSqlite("DataSource=app.db;Cache=Shared");
+            base.OnConfiguring(opts);
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

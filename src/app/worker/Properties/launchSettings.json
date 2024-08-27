@@ -6,8 +6,8 @@
       "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
-        "NOTION_DATABASEID": "YOUR_DATABASEID",
-        "NOTION_API_SECRET": "YOUR_API_SECRET",
+        "NOTION_DATABASEID": "2b51cd5bd62744a2972abbff6ec6f883",
+        "NOTION_API_SECRET": "secret_R3hqhfDO7CfrKB83EShlXJ3BZsQIndHJ3WVnGS0bi9H",
         "NOTION_API_VERSION": "2022-06-28"
       }
     }
