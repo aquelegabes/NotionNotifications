@@ -1,20 +1,23 @@
-using System.Diagnostics;
-using Hangfire;
-using NotionNotifications.Data;
-using NotionNotifications.Server;
+using NotionNotifications.Integration;
+using NotionNotifications.Server.Hubs;
+using NotionNotifications.Server.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<NotionNotificationsContext>();
+
+builder.Services.AddSignalR();
+
+builder.ConfigureServices();
 
 builder.ConfigureHangfire();
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
-app.MapGet("/send-task", () => {
+app.MapHub<NotionNotificationHub>("/notification");
 
-    BackgroundJob.Enqueue(() => Debug.WriteLine("[*] TEXTO ENVIADO PELO JOB ÀS: {0}", DateTimeOffset.Now));
-    return "task sent";
+// app.ConfigureRecurringJobs();
+
+app.MapGet("/fetch", async(NotionIntegrationJobs job) => {
+    await job.FetchAvailableNotificationsForCurrentDate();
 });
 
 app.Run();

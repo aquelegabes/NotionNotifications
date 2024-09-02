@@ -11,7 +11,13 @@ namespace NotionNotifications.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder opts)
         {
-            opts.UseSqlite("DataSource=app.db;Cache=Shared");
+            opts.UseSqlite(
+                connectionString: "DataSource=app.db;Cache=Shared",
+                builderOptions =>
+                {
+                    builderOptions.MigrationsAssembly("NotionNotifications.Data");
+                });
+
             base.OnConfiguring(opts);
         }
 

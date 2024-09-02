@@ -12,11 +12,15 @@ namespace NotionNotifications.Data.Configurations
 
             builder.HasKey(t => t.Id);
 
+            builder.Property(t => t.EventDate);
+
             builder.Property(t => t.NewObjectAsJsonString).HasColumnType("text");
 
             builder.Property(t => t.OldObjectAsJsonString).HasColumnType("text");
 
-            builder.Property(t => t.EventDate);
+            builder.Property(t => t.Description).HasColumnType("text");
+
+            builder.Property(t => t.TransactionType).HasColumnType("int").IsRequired();
         }
     }
 }

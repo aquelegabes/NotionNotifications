@@ -12,7 +12,7 @@ namespace NotionNotifications.Data.Configurations
 
             builder.HasKey(t => t.Id);
 
-            builder.Property(t => t.NotionIdProperty).HasColumnType("integer");
+            builder.Property(t => t.NotionIdProperty).HasColumnType("int");
 
             builder.Property(t => t.IntegrationId).HasColumnType("text");
 
@@ -26,7 +26,7 @@ namespace NotionNotifications.Data.Configurations
 
             builder.Property(t => t.EventDate);
 
-            builder.Property(t => t.Occurence);
+            builder.Property(t => t.Occurence).HasColumnType("int");
         }
     }
 }
