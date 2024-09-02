@@ -1,16 +1,17 @@
 using Hangfire;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using NotionNotifications.Domain.Entities;
 using NotionNotifications.Domain.Extensions;
+using NotionNotifications.Domain.Interfaces;
 using NotionNotifications.Integration;
 using NotionNotifications.Server.Hubs;
 
 namespace NotionNotifications.Server.Jobs;
 
 public class NotionIntegrationJobs(
-    NotionClient client)
+    NotionClient client,
+    IHubContext<NotionNotificationHub> hubContext)
 {
-
     public async Task SetNextNotificationOccurrence(
         NotificationRoot root)
     {
@@ -53,7 +54,7 @@ public class NotionIntegrationJobs(
             foreach (var notification in notifications)
             {
                 var notificationRoot = notification.ToNotificationRoot();
-                ScheduleToSendNotification(notificationRoot);
+                ScheduleNotification(notificationRoot);
             }
         }
         catch
@@ -63,11 +64,19 @@ public class NotionIntegrationJobs(
         }
     }
 
-    public void ScheduleToSendNotification(
-        NotificationRoot root,
-        CancellationToken cToken = default)
+    public void ScheduleNotification(NotificationRoot root)
     {
-        var timeToNotify = DateTimeOffset.Now - root.EventDate;
-        // BackgroundJob.Schedule(() => hub.SendToClients(root, cToken), timeToNotify);
+        var timeNow = DateTimeOffset.Now;
+
+        if (root.EventDate < timeNow)
+            return;
+
+        var timeToNotify = root.EventDate - DateTimeOffset.Now;
+        var dto = root.ToNotificationDto();
+
+        string jobId = BackgroundJob.Schedule<IClientHandler>(
+            methodCall: (handler) => handler.SendNotificationToClients(dto),
+            delay: TimeSpan.FromSeconds(10)
+        );
     }
 }

@@ -1,5 +1,3 @@
-using NotionNotifications.Integration;
-using NotionNotifications.Server.Hubs;
 using NotionNotifications.Server.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,11 +10,12 @@ builder.ConfigureHangfire();
 
 var app = builder.Build();
 
-app.MapHub<NotionNotificationHub>("/notification");
+app.MapHubs();
 
-// app.ConfigureRecurringJobs();
+app.ConfigureRecurringJobs();
 
-app.MapGet("/fetch", async(NotionIntegrationJobs job) => {
+app.MapGet("/fetch", async (NotionIntegrationJobs job) =>
+{
     await job.FetchAvailableNotificationsForCurrentDate();
 });
 

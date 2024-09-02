@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libs\clienthub\NotionNotifications.ClientHub.csproj" />
+    <ProjectReference Include="..\..\libs\domain\NotionNotifications.Domain.csproj" />
     <ProjectReference Include="..\..\libs\external\NotionNotifications.External.csproj" />
   </ItemGroup>
 </Project>

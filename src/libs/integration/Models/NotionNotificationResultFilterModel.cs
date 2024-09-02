@@ -56,7 +56,7 @@ namespace NotionNotifications.Integration.Models
                 new
                 {
                     property = "Data do evento",
-                    date = new { equals = EventDate.GetValueOrDefault().ToString("yyyy-MM-DD") }
+                    date = new { equals = EventDate.GetValueOrDefault().ToString("yyyy-MM-dd") }
                 } : null;
 
             if (eventDateFilter is not null)

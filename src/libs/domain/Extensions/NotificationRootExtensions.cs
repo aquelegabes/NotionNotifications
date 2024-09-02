@@ -1,4 +1,5 @@
-﻿using NotionNotifications.Domain.Entities;
+﻿using NotionNotifications.Domain.Dtos;
+using NotionNotifications.Domain.Entities;
 using NotionNotifications.Integration.Models;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -41,6 +42,20 @@ namespace NotionNotifications.Domain.Extensions
                 CreatedTime = root.CreatedAt,
                 LastEditedTime = root.LastUpdatedAt,
                 Properties = JsonNode.Parse(propertiesAsJson)
+            };
+        }
+
+        public static NotificationDto ToNotificationDto(
+            this NotificationRoot root,
+            string message = "",
+            string icon = "")
+        {
+            return new NotificationDto
+            {
+                Title = root.Title,
+                IntegrationId = root.IntegrationId,
+                Message = message,
+                Icon = icon
             };
         }
 
