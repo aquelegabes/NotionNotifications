@@ -2,7 +2,8 @@ using System.Runtime.InteropServices;
 
 namespace NotionNotifications.External.Libnotify;
 
-internal partial class LibnotifyWrapper{
+internal partial class Wrapper
+{
     [LibraryImport(
         libraryName: "libnotify.so.4")]
     [return: MarshalAs(UnmanagedType.LPStr)]
@@ -14,17 +15,17 @@ internal partial class LibnotifyWrapper{
 
     [LibraryImport(
         libraryName: "libnotify.so.4")]
-    [return:MarshalAs(UnmanagedType.Bool)]
+    [return: MarshalAs(UnmanagedType.Bool)]
     internal static partial bool notify_init(
         [MarshalAs(UnmanagedType.LPStr)] string appName);
 
     [LibraryImport(
-        libraryName: "libnotify.so.4", 
+        libraryName: "libnotify.so.4",
         StringMarshalling = StringMarshalling.Utf8)]
     internal static partial IntPtr notify_notification_new(
         [MarshalAs(UnmanagedType.LPStr)] string summary,
         [MarshalAs(UnmanagedType.LPStr)] string? body,
-	    [MarshalAs(UnmanagedType.LPStr)] string? icon);
+        [MarshalAs(UnmanagedType.LPStr)] string? icon);
 
     [LibraryImport(libraryName: "libnotify.so.4")]
     internal static partial IntPtr notify_notification_close(
@@ -32,8 +33,8 @@ internal partial class LibnotifyWrapper{
         out IntPtr error);
 
     [LibraryImport(
-	    libraryName: "libnotify.so.4",
-	    StringMarshalling = StringMarshalling.Utf8)]
+        libraryName: "libnotify.so.4",
+        StringMarshalling = StringMarshalling.Utf8)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static partial bool notify_notification_show(IntPtr notification, out IntPtr error);
 }

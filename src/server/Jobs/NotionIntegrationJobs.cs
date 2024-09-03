@@ -1,6 +1,5 @@
 using Hangfire;
 using NotionNotifications.Domain.Dtos;
-using NotionNotifications.Domain.Entities;
 using NotionNotifications.Domain.Extensions;
 using NotionNotifications.Domain.Interfaces;
 using NotionNotifications.Integration;
@@ -18,8 +17,7 @@ public class NotionIntegrationJobs(
 
         if (dto.Occurence != Domain.ENotificationOccurence.None)
         {
-            var root = NotificationRoot.FromDto(dto);
-            var nextNotification = root.GenerateNextOccurrence();
+            var nextNotification = dto.GenerateNextOccurrence();
             var model = nextNotification.ToNotionResultModel();
 #if DEBUG
             var response = await client.AddNotification(model);
@@ -37,10 +35,9 @@ public class NotionIntegrationJobs(
     public async Task SetNotificationAsAlreadyNotified(
         NotificationDto dto)
     {
-        var root = NotificationRoot.FromDto(dto);
-        root.AlreadyNotified = true;
+        dto.AlreadyNotified = true;
 
-        var model = root.ToNotionResultModel();
+        var model = dto.ToNotionResultModel();
 #if DEBUG
         var response = await client.UpdateNotification(model);
 #else
@@ -67,7 +64,7 @@ public class NotionIntegrationJobs(
 
         foreach (var notification in availableNotifications)
         {
-            var dto = notification.ToNotificationRoot().ToNotificationDto();
+            var dto = notification.ToNotificationDto();
             ScheduleNotification(dto);
         }
     }
@@ -76,7 +73,7 @@ public class NotionIntegrationJobs(
     {
         var existing = collectionHandler.Find(p => p.Notification.IntegrationId == dto.IntegrationId);
 
-        if (existing is not null && existing.IsScheduled)
+        if (existing?.IsScheduled == true)
             return;
 
         var timeNow = DateTimeOffset.Now;

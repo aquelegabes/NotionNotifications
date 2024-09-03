@@ -2,7 +2,6 @@
 {
     public class NotificationDto
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
         public Guid IntegrationId { get; set; } = Guid.Empty;
         public int NotionIdProperty { get; set; }
         public string Title { get; set; } = string.Empty;

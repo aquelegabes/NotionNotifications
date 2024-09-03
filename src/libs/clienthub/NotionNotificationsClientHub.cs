@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Logging;
 using NotionNotifications.Domain;
 using NotionNotifications.Domain.Dtos;
+using System.Net.Sockets;
 
 namespace NotionNotifications;
 
@@ -8,11 +10,13 @@ public class NotionNotificationsClientHub : IDisposable
 {
     private readonly HubConnection _connection;
     private readonly INotificationHandler _handler;
+    private readonly ILogger<NotionNotificationsClientHub> _logger;
     private const string NOTIFICATION_HUB = "/notification";
     private static string APP_URL => Environment.GetEnvironmentVariable("APP_URL")!;
 
     public NotionNotificationsClientHub(
-        INotificationHandler handler)
+        INotificationHandler handler,
+        ILogger<NotionNotificationsClientHub> logger)
     {
         this._connection = new HubConnectionBuilder()
             .WithUrl($"{APP_URL}{NOTIFICATION_HUB}")
@@ -26,21 +30,32 @@ public class NotionNotificationsClientHub : IDisposable
         };
 
         this._handler = handler;
+        this._logger = logger;
     }
 
     public async Task Connect()
     {
-        await _connection.StartAsync();
-
-        while (!IsConnected())
+        try
         {
-            Console.WriteLine("[*] Waiting for connection...");
-            await Task.Delay(1000);
+            await _connection.StartAsync();
+
+            while (!IsConnected())
+            {
+                _logger.LogInformation("Waiting for connection...");
+                await Task.Delay(1000);
+            }
+
+            _logger.LogInformation("Connected: {connectionId}", _connection.ConnectionId);
+
+            ConfigureHandlers();
         }
-
-        Console.WriteLine("[*] Connected: {0}", _connection.ConnectionId);
-
-        ConfigureHandlers();
+        catch (HttpRequestException ex)
+        when (ex.InnerException is SocketException innerEx
+                && innerEx.SocketErrorCode == SocketError.NotConnected)
+        {
+            _logger.LogError("Host not available for connection");
+            throw;
+        }
     }
 
     public async Task Disconnect() => await _connection.StopAsync();
@@ -63,7 +78,7 @@ public class NotionNotificationsClientHub : IDisposable
 
     public void Dispose()
     {
-        _connection.StopAsync();
+        Task.FromResult(Disconnect()).Wait();
         Task.FromResult(_connection.DisposeAsync()).Wait();
     }
 }

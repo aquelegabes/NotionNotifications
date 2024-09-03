@@ -11,8 +11,22 @@ public class NotificationCollectionHandler
         handles = [];
     }
 
-    public void Add(NotificationHandle handle) => handles.Add(handle);
-    public void Remove(NotificationHandle handle) => handles.Remove(handle);
+    public void Add(NotificationHandle handle)
+    {
+        lock (handles)
+        {
+            handles.Add(handle);
+        }
+    }
+
+    public void Remove(NotificationHandle handle)
+    {
+        lock (handles)
+        {
+            handles.Remove(handle);
+        }
+    }
+
     public NotificationHandle RemoveIfExists(NotificationDto dto)
     {
         var existing = Find(p => p.Notification.IntegrationId == dto.IntegrationId);

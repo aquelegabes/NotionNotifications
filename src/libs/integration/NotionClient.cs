@@ -24,6 +24,7 @@ public class NotionClient : IDisposable
         _client.DefaultRequestHeaders.Add("Notion-Version", _settings.Version);
         _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_settings.Secret}");
     }
+
     private void ConfigureSettings()
     {
         TextEncoderSettings encoderSettings = new();
@@ -94,8 +95,7 @@ public class NotionClient : IDisposable
         };
         var body = JsonContent.Create(bodyContent, options: _serializerOptions);
 
-        var result = await _client.PostAsync(uri, body);
-        return result;
+        return await _client.PostAsync(uri, body);
     }
 
     public async Task<HttpResponseMessage> UpdateNotification(NotionResultModel model)

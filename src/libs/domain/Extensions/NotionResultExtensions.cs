@@ -1,33 +1,33 @@
-﻿using NotionNotifications.Domain.Entities;
+﻿using NotionNotifications.Domain.Dtos;
 using NotionNotifications.Integration.Models;
 
 namespace NotionNotifications.Domain.Extensions
 {
     public static class NotionResultExtensions
     {
-        public static NotificationRoot ToNotificationRoot(
-            this NotionResultModel result)
+        public static NotificationDto ToNotificationDto(
+            this NotionResultModel model)
         {
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             return new()
             {
-                IntegrationId = result.Id,
-                NotionIdProperty = result.Properties["ID"]["unique_id"]["number"].GetValue<int>(),
-                Title = result.Properties["Título"]["title"].AsArray().First()["plain_text"].GetValue<string>(),
-                AlreadyNotified = result.Properties["Já Notificado?"]["checkbox"].GetValue<bool>(),
-                Occurence = GetOccurence(result.Properties["Repetição"]["select"]["name"].GetValue<string>()),
-                EventDate = result.Properties["Data do evento"]["date"]["start"].GetValue<DateTimeOffset>(),
-                Categories = result.Properties["Categorias"]["multi_select"].AsArray().Select(_ => _["name"].GetValue<string>()),
-                LastUpdatedAt = result.LastEditedTime,
-                CreatedAt = result.CreatedTime,
+                IntegrationId = model.Id,
+                NotionIdProperty = model.Properties["ID"]["unique_id"]["number"].GetValue<int>(),
+                Title = model.Properties["Título"]["title"].AsArray().First()["plain_text"].GetValue<string>(),
+                AlreadyNotified = model.Properties["Já Notificado?"]["checkbox"].GetValue<bool>(),
+                Occurence = GetOccurence(model.Properties["Repetição"]["select"]["name"].GetValue<string>()),
+                EventDate = model.Properties["Data do evento"]["date"]["start"].GetValue<DateTimeOffset>(),
+                Categories = model.Properties["Categorias"]["multi_select"].AsArray().Select(_ => _["name"].GetValue<string>()).ToArray(),
+                LastUpdatedAt = model.LastEditedTime,
+                CreatedAt = model.CreatedTime,
             };
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
-        public static IEnumerable<NotificationRoot> ToNotificationRoot(
-            this IEnumerable<NotionResultModel> result)
+        public static IEnumerable<NotificationDto> ToNotificationDto(
+            this IEnumerable<NotionResultModel> models)
         {
-            return result.Select(ToNotificationRoot);
+            return models.Select(ToNotificationDto);
         }
 
         private static ENotificationOccurence GetOccurence(string value)
