@@ -2,6 +2,7 @@ using Hangfire;
 using Hangfire.Storage.SQLite;
 using NotionNotifications.Domain.Interfaces;
 using NotionNotifications.Integration;
+using NotionNotifications.Server;
 using NotionNotifications.Server.Hubs;
 using NotionNotifications.Server.Jobs;
 
@@ -25,14 +26,14 @@ public static class ServerConfig
     public static void ConfigureRecurringJobs(
         this WebApplication app)
     {
-        app.UseHangfireDashboard("/jobs");
+        app.UseHangfireDashboard("/hangfire");
         RecurringJob.AddOrUpdate<NotionIntegrationJobs>(
             recurringJobId: nameof(NotionIntegrationJobs.FetchAvailableNotificationsForCurrentDate),
             methodCall: (job) => job.FetchAvailableNotificationsForCurrentDate(),
             cronExpression: Cron.Daily());
     }
 
-    public static void ConfigureServices(
+    public static void ConfigureServicesFromAssembly(
         this WebApplicationBuilder builder)
     {
         builder.Services.AddHttpClient();
@@ -42,6 +43,8 @@ public static class ServerConfig
         builder.Services.AddScoped<NotionIntegrationJobs>();
 
         builder.Services.AddScoped<IClientHandler, HubHelper>();
+
+        builder.Services.AddSingleton<NotificationCollectionHandler>();
     }
 
     public static void MapHubs(

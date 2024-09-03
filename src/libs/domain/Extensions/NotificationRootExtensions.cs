@@ -1,6 +1,8 @@
 ﻿using NotionNotifications.Domain.Dtos;
 using NotionNotifications.Domain.Entities;
 using NotionNotifications.Integration.Models;
+using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -50,13 +52,27 @@ namespace NotionNotifications.Domain.Extensions
             string message = "",
             string icon = "")
         {
-            return new NotificationDto
+            var result = new NotificationDto()
             {
-                Title = root.Title,
-                IntegrationId = root.IntegrationId,
                 Message = message,
                 Icon = icon
             };
+
+            root.MapPropertiesTo(result, new CustomPropertyMapping
+            {
+                Name = nameof(NotificationDto.Categories),
+                PropertyAction = (destinationPropInfo, propSource, destination) =>
+                {
+                    if (destinationPropInfo.PropertyType.FullName == typeof(string[]).FullName
+                        && propSource is IEnumerable<string> enumerable)
+                    {
+                        var arr = enumerable.ToArray();
+                        destinationPropInfo.SetValue(destination, arr);
+                    }
+                }
+            });
+
+            return result;
         }
 
         private static void SetupUpdatedProperties(

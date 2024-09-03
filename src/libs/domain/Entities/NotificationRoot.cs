@@ -1,10 +1,11 @@
 using System.ComponentModel;
+using NotionNotifications.Domain.Dtos;
+using NotionNotifications.Domain.Extensions;
 
 namespace NotionNotifications.Domain.Entities;
 
 public class NotificationRoot : INotifyPropertyChanged
 {
-
     #region Fields
     private string title = string.Empty;
     private bool alreadyNotified = false;
@@ -46,5 +47,22 @@ public class NotificationRoot : INotifyPropertyChanged
     protected void OnPropertyChanged(PropertyChangedEventArgs e)
     {
         PropertyChanged?.Invoke(this, e);
+    }
+
+    public static NotificationRoot FromDto(NotificationDto dto)
+    {
+        NotificationRoot root = new();
+
+        dto.MapPropertiesTo(root, new CustomPropertyMapping
+        {
+            Name = nameof(Categories),
+            PropertyAction = (destinationPropInfo, srcValue, destination) =>
+            {
+                if (srcValue is string[] arr)
+                    destinationPropInfo.SetValue(destination, arr.AsEnumerable());
+            }
+        });
+
+        return root;
     }
 }

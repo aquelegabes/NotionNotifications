@@ -4,15 +4,29 @@ using NotionNotifications.Domain.Interfaces;
 
 namespace NotionNotifications.Server.Hubs
 {
-    public class HubHelper(IHubContext<NotionNotificationHub> hubContext) : IClientHandler
+    public class HubHelper(
+        IHubContext<NotionNotificationHub> hubContext,
+        NotificationCollectionHandler collectionHandler) : IClientHandler
     {
         public async Task SendNotificationToClients(
             NotificationDto dto)
         {
+            var handle = collectionHandler.Find(p => p.Notification.IntegrationId == dto.IntegrationId);
+
+            if (handle is null || handle.IsFired)
+                return;
+
             await hubContext.Clients.All.SendAsync(
-                method: "Notify",
+                method: "OnNotify",
                 arg1: dto,
                 cancellationToken: CancellationToken.None);
+
+            collectionHandler.Remove(handle);
+
+            handle.IsFired = true;
+            handle.IsScheduled = false;
+
+            collectionHandler.Add(handle);
         }
     }
 }

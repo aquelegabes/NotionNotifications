@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="..\libs\data\NotionNotifications.Data.csproj" />
     <ProjectReference Include="..\libs\domain\NotionNotifications.Domain.csproj" />
     <ProjectReference Include="..\libs\integration\NotionNotifications.NotionIntegration.csproj" />
   </ItemGroup>
@@ -11,7 +10,6 @@
     <PackageReference Include="Hangfire.Core" Version="1.8.14" />
     <PackageReference Include="Hangfire.Storage.SQLite" Version="0.4.2" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
   </ItemGroup>
 

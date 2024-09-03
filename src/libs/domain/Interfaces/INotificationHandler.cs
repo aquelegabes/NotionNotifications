@@ -1,6 +1,6 @@
 namespace NotionNotifications.Domain;
 
-public interface INotificationHandler : IDisposable
+public interface INotificationHandler
 {
     void Send(string title, string message, string icon = "");
 }

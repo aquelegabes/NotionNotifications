@@ -1,82 +1,103 @@
 using Hangfire;
-using Microsoft.AspNetCore.SignalR;
+using NotionNotifications.Domain.Dtos;
 using NotionNotifications.Domain.Entities;
 using NotionNotifications.Domain.Extensions;
 using NotionNotifications.Domain.Interfaces;
 using NotionNotifications.Integration;
-using NotionNotifications.Server.Hubs;
 
 namespace NotionNotifications.Server.Jobs;
 
 public class NotionIntegrationJobs(
     NotionClient client,
-    IHubContext<NotionNotificationHub> hubContext)
+    NotificationCollectionHandler collectionHandler)
 {
     public async Task SetNextNotificationOccurrence(
-        NotificationRoot root)
+        NotificationDto dto)
     {
-        await SetNotificationAsAlreadyNotified(root);
+        await SetNotificationAsAlreadyNotified(dto);
 
-        if (root.Occurence != Domain.ENotificationOccurence.None)
+        if (dto.Occurence != Domain.ENotificationOccurence.None)
         {
+            var root = NotificationRoot.FromDto(dto);
             var nextNotification = root.GenerateNextOccurrence();
             var model = nextNotification.ToNotionResultModel();
 #if DEBUG
             var response = await client.AddNotification(model);
+#else
+            await client.AddNotification(model);
 #endif
+            var beforeDeletion = collectionHandler.RemoveIfExists(dto);
+
+            beforeDeletion.IsNextOccurrenceSetted = true;
+
+            collectionHandler.Add(beforeDeletion);
         }
     }
 
     public async Task SetNotificationAsAlreadyNotified(
-        NotificationRoot notification)
+        NotificationDto dto)
     {
-        notification.AlreadyNotified = true;
-        var model = notification.ToNotionResultModel();
+        var root = NotificationRoot.FromDto(dto);
+        root.AlreadyNotified = true;
+
+        var model = root.ToNotionResultModel();
 #if DEBUG
         var response = await client.UpdateNotification(model);
+#else
+        await client.UpdateNotification(model);
 #endif
+        var beforeDeletion = collectionHandler.RemoveIfExists(dto);
+
+        beforeDeletion.IsFired = true;
+        beforeDeletion.IsScheduled = false;
+
+        collectionHandler.Add(beforeDeletion);
     }
 
     public async Task FetchAvailableNotificationsForCurrentDate()
     {
-        var ctokenSource = new CancellationTokenSource();
-        try
-        {
-            var now = DateTime.UtcNow;
+        var now = DateTime.UtcNow;
 
-            var notifications = await client.GetNotifications(
-                filter: new()
-                {
-                    EventDate = now.Date
-                }
-            );
-
-            foreach (var notification in notifications)
+        var availableNotifications = await client.GetNotifications(
+            filter: new()
             {
-                var notificationRoot = notification.ToNotificationRoot();
-                ScheduleNotification(notificationRoot);
+                EventDate = now.Date
             }
-        }
-        catch
+        );
+
+        foreach (var notification in availableNotifications)
         {
-            ctokenSource.Cancel();
-            throw;
+            var dto = notification.ToNotificationRoot().ToNotificationDto();
+            ScheduleNotification(dto);
         }
     }
 
-    public void ScheduleNotification(NotificationRoot root)
+    public void ScheduleNotification(NotificationDto dto)
     {
-        var timeNow = DateTimeOffset.Now;
+        var existing = collectionHandler.Find(p => p.Notification.IntegrationId == dto.IntegrationId);
 
-        if (root.EventDate < timeNow)
+        if (existing is not null && existing.IsScheduled)
             return;
 
-        var timeToNotify = root.EventDate - DateTimeOffset.Now;
-        var dto = root.ToNotificationDto();
+        var timeNow = DateTimeOffset.Now;
+
+        if (dto.EventDate < timeNow)
+            return;
+
+        var timeToNotify = dto.EventDate - DateTimeOffset.Now;
 
         string jobId = BackgroundJob.Schedule<IClientHandler>(
             methodCall: (handler) => handler.SendNotificationToClients(dto),
-            delay: TimeSpan.FromSeconds(10)
+            delay: timeToNotify
         );
+
+        if (string.IsNullOrWhiteSpace(jobId))
+            return;
+
+        collectionHandler.Add(new()
+        {
+            Notification = dto,
+            IsScheduled = true,
+        });
     }
 }

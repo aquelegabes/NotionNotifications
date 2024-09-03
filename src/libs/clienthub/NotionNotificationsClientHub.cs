@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.Logging;
 using NotionNotifications.Domain;
 using NotionNotifications.Domain.Dtos;
-using NotionNotifications.Domain.Entities;
 
 namespace NotionNotifications;
 
 public class NotionNotificationsClientHub : IDisposable
 {
-    private bool disposedValue;
-
     private readonly HubConnection _connection;
     private readonly INotificationHandler _handler;
     private const string NOTIFICATION_HUB = "/notification";
@@ -26,30 +22,25 @@ public class NotionNotificationsClientHub : IDisposable
         {
             await Task.Delay(new Random().Next(0, 5) * 1000);
             await _connection.StartAsync();
+            ConfigureHandlers();
         };
+
         this._handler = handler;
     }
 
     public async Task Connect()
     {
-        try
+        await _connection.StartAsync();
+
+        while (!IsConnected())
         {
-            await _connection.StartAsync();
-
-            while (!IsConnected())
-            {
-                Console.WriteLine("[*] Waiting for connection...");
-                await Task.Delay(1000);
-            }
-
-            Console.WriteLine("[*] Connected: {0}", _connection.ConnectionId);
-
-            ConfigureHandlers();
+            Console.WriteLine("[*] Waiting for connection...");
+            await Task.Delay(1000);
         }
-        catch (Exception ex)
-        {
-            throw;
-        }
+
+        Console.WriteLine("[*] Connected: {0}", _connection.ConnectionId);
+
+        ConfigureHandlers();
     }
 
     public async Task Disconnect() => await _connection.StopAsync();
@@ -57,36 +48,22 @@ public class NotionNotificationsClientHub : IDisposable
 
     private void ConfigureHandlers()
     {
-        _connection.On<NotificationDto>("Notify", Notify);
+        _connection.On<NotificationDto>("OnNotify", OnNotify);
     }
 
-    public async Task Notify(NotificationDto dto)
+    public async Task OnNotify(NotificationDto dto)
     {
         _handler.Send(
             title: "Nova notificação",
             message: dto.Title);
-    }
+        await Task.Delay(100);
 
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                // TODO: dispose managed state (managed objects)
-                _handler.Dispose();
-            }
-
-            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-            // TODO: set large fields to null
-            disposedValue = true;
-        }
+        await _connection.InvokeAsync("SetNotificationAsAlreadyNotified", dto);
     }
 
     public void Dispose()
     {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
+        _connection.StopAsync();
+        Task.FromResult(_connection.DisposeAsync()).Wait();
     }
 }
