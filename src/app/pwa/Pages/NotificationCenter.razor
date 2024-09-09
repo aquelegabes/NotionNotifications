@@ -1,26 +1,42 @@
 ﻿@page "/notification-center"
-@using WebPush
+
+@using NotionNotifications.Domain.Dtos
+@using System.Text.Json
+
+@inject IJSRuntime JSRuntime
+@inject PwaSubscriptionsClient Client
 
 <h3>NotificationCenter</h3>
 
-<textarea placeholder="Text to test the notification..."
-          @bind="@notificationText"></textarea>
 
-<button @onclick="SendNotification">Send notification</button>
+<input type="text" @bind="@notificationTitle" placeholder="Título da notificação..." />
+<br />
+<textarea placeholder="Text to test the notification..." @bind="@notificationText"></textarea>
+<br />
+
+<button @onclick="SendNotification">Enviar notificação</button>
 
 @code {
-
+    string notificationTitle = string.Empty;
     string notificationText = string.Empty;
 
-    void SendNotification(MouseEventArgs evt)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var vapid = new
+        if (firstRender)
         {
-            subject = "mailto:gabriel.santos@targetsoftware.com.br",
-            publicKey = "BC0sl67vPaKPovOGHhtqf1ZmYT0_RzjeuA1XwKfk4B0fCJQq0oICxNvZVg410O0RFUw48DcMelPPwkCn7xxLxBE",
-            privateKey = "DHzx-whN9Z0n7ypI2LZHcUo3lfOTM_jVuAIJhfXXO70"
-        };
+            var subscription = await JSRuntime.InvokeAsync<WebPushNotificationSubscriptionDto>("blazorPushNotifications.requestSubscription");
+            await Client.Subscribe(subscription);
+        }
 
-        var pushSubscription = new PushSubscription()
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task SendNotification()
+    {
+        if (string.IsNullOrWhiteSpace(notificationTitle)
+        || string.IsNullOrWhiteSpace(notificationText))
+            return;
+
+        await Client.SendTestNotification(new() { Message = notificationText, Title = notificationTitle });
     }
 }

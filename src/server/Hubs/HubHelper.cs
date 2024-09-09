@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using NotionNotifications.Domain.Dtos;
 using NotionNotifications.Domain.Interfaces;
+using NotionNotifications.Server.Handlers;
 
 namespace NotionNotifications.Server.Hubs
 {

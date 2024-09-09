@@ -4,18 +4,30 @@
 
   window.blazorPushNotifications = {
     requestSubscription: async () => {
-      const worker = await navigator.serviceWorker.getRegistration()
-      const existingSubscription = await worker.pushManager.getSubscription()
-      if (!existingSubscription) {
-        const newSubscription = await subscribe(worker)
-        if (newSubscription) {
-          return {
-            url: newSubscription.endpoint,
-            p256dh: arrayBufferToBase64(newSubscription.getKey('p256dh')),
-            auth: arrayBufferToBase64(newSubscription.getKey('auth')),
+      const permission = await Notification.requestPermission()
+
+      if (permission === 'granted') {
+        const worker = await navigator.serviceWorker.getRegistration()
+        const existingSubscription = await worker.pushManager.getSubscription()
+        if (!existingSubscription) {
+          const newSubscription = await subscribe(worker)
+          if (newSubscription) {
+            return {
+              url: newSubscription.endpoint,
+              p256dh: arrayBufferToBase64(newSubscription.getKey('p256dh')),
+              auth: arrayBufferToBase64(newSubscription.getKey('auth')),
+            }
           }
         }
+
+        return {
+          url: existingSubscription.endpoint,
+          p256dh: arrayBufferToBase64(existingSubscription.getKey('p256dh')),
+          auth: arrayBufferToBase64(existingSubscription.getKey('auth'))
+        }
       }
+
+      return null;
     },
 
     unSubscribe: async () => {

@@ -69,8 +69,9 @@ public class NotionNotificationsClientHub : IDisposable
     public async Task OnNotify(NotificationDto dto)
     {
         _handler.Send(
-            title: "Nova notificação",
-            message: dto.Title);
+            title: dto.Title,
+            message: dto.Message,
+            icon: dto.Icon);
         await Task.Delay(100);
 
         await _connection.InvokeAsync("SetNotificationAsAlreadyNotified", dto);

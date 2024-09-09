@@ -1,29 +1,29 @@
 using NotionNotifications.Domain.Dtos;
 
-namespace NotionNotifications.Server;
+namespace NotionNotifications.Server.Handlers;
 
 public class NotificationCollectionHandler
 {
-    private readonly List<NotificationHandle> handles;
+    private readonly List<NotificationHandle> collection;
 
     public NotificationCollectionHandler()
     {
-        handles = [];
+        collection = [];
     }
 
     public void Add(NotificationHandle handle)
     {
-        lock (handles)
+        lock (collection)
         {
-            handles.Add(handle);
+            collection.Add(handle);
         }
     }
 
     public void Remove(NotificationHandle handle)
     {
-        lock (handles)
+        lock (collection)
         {
-            handles.Remove(handle);
+            collection.Remove(handle);
         }
     }
 
@@ -46,7 +46,7 @@ public class NotificationCollectionHandler
 
     public NotificationHandle? Find(Predicate<NotificationHandle> predicate)
     {
-        return handles.Find(predicate);
+        return collection.Find(predicate);
     }
 }
 

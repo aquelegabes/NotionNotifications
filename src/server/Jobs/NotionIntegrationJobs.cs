@@ -3,6 +3,7 @@ using NotionNotifications.Domain.Dtos;
 using NotionNotifications.Domain.Extensions;
 using NotionNotifications.Domain.Interfaces;
 using NotionNotifications.Integration;
+using NotionNotifications.Server.Handlers;
 
 namespace NotionNotifications.Server.Jobs;
 

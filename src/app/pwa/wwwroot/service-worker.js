@@ -6,11 +6,10 @@ self.addEventListener('fetch', () => { });
 self.addEventListener('push', event => {
   const payload = event.data.json();
   event.waitUntil(
-    self.registration.showNotification('NotionNotifications', {
+    self.registration.showNotification(payload.title, {
       body: payload.message,
-      icon: 'img/icon-512.png',
+      icon: payload.icon,
       vibrate: [100, 50, 100],
-      data: { url: payload.url }
     })
   );
 });
