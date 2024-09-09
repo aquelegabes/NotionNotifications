@@ -1,0 +1,26 @@
+﻿@page "/notification-center"
+@using WebPush
+
+<h3>NotificationCenter</h3>
+
+<textarea placeholder="Text to test the notification..."
+          @bind="@notificationText"></textarea>
+
+<button @onclick="SendNotification">Send notification</button>
+
+@code {
+
+    string notificationText = string.Empty;
+
+    void SendNotification(MouseEventArgs evt)
+    {
+        var vapid = new
+        {
+            subject = "mailto:gabriel.santos@targetsoftware.com.br",
+            publicKey = "BC0sl67vPaKPovOGHhtqf1ZmYT0_RzjeuA1XwKfk4B0fCJQq0oICxNvZVg410O0RFUw48DcMelPPwkCn7xxLxBE",
+            privateKey = "DHzx-whN9Z0n7ypI2LZHcUo3lfOTM_jVuAIJhfXXO70"
+        };
+
+        var pushSubscription = new PushSubscription()
+    }
+}
