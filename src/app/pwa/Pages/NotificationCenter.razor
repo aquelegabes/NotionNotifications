@@ -4,31 +4,70 @@
 @using System.Text.Json
 
 @inject IJSRuntime JSRuntime
-@inject PwaSubscriptionsClient Client
+@inject NotificationCenterService Service
 
 <h3>NotificationCenter</h3>
 
-
+<div>
+    <label for="isSubscribed">Elegível para receber notificações?</label>
+    <input type="checkbox" readonly @bind="isSubscribed" disabled />
+</div>
+<br />
+@if (isSubscribed)
+{
+    <button type="button" @onclick="Unsubscribe">Parar de receber notificações</button>
+    <br />
+}
+@if (!isSubscribed)
+{
+    <button type="button" @onclick="Subscribe">Receber notificações</button>
+    <br />
+}
 <input type="text" @bind="@notificationTitle" placeholder="Título da notificação..." />
 <br />
 <textarea placeholder="Text to test the notification..." @bind="@notificationText"></textarea>
 <br />
+<button type="button" @onclick="SendNotification">Enviar notificação</button>
 
-<button @onclick="SendNotification">Enviar notificação</button>
+@if (Service.GetClientNotifications().Any())
+{
+    <div>
+        <label>Últimas notificações recebidas:</label>
+        <table>
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Mensagem</th>
+                    <th>Enviada em</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var notification in Service.GetClientNotifications())
+                {
+                    <tr>
+                        <td>@(notification.Title)</td>
+                        <td>@(notification.Message)</td>
+                        <td>@(notification.NotifiedAt)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
 
 @code {
     string notificationTitle = string.Empty;
     string notificationText = string.Empty;
+    bool isSubscribed = false;
+    WebPushNotificationSubscriptionDto? subscription = null;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            var subscription = await JSRuntime.InvokeAsync<WebPushNotificationSubscriptionDto>("blazorPushNotifications.requestSubscription");
-            await Client.Subscribe(subscription);
-        }
+        subscription = await JSRuntime.InvokeAsync<WebPushNotificationSubscriptionDto>("blazorPushNotifications.requestSubscription");
+        this.isSubscribed = await Service.CheckSubscription(subscription);
 
         await base.OnAfterRenderAsync(firstRender);
+        this.StateHasChanged();
     }
 
     async Task SendNotification()
@@ -37,6 +76,35 @@
         || string.IsNullOrWhiteSpace(notificationText))
             return;
 
-        await Client.SendTestNotification(new() { Message = notificationText, Title = notificationTitle });
+        await Service.NotifySubscription(
+            notification: new() { Message = notificationText, Title = notificationTitle }, 
+            subscription: subscription!);
+
+        this.Clear();
+    }
+
+    void Clear()
+    {
+        notificationTitle = string.Empty;
+        notificationText = string.Empty;
+    }
+
+    async Task Subscribe()
+    {
+        if (this.isSubscribed)
+            return;
+
+        await Service.Subscribe(this.subscription!);
+
+        this.isSubscribed = await Service.CheckSubscription(this.subscription!);
+    }
+
+    async Task Unsubscribe()
+    {
+        if (!this.isSubscribed)
+            return;
+
+        await Service.Unsubscribe(this.subscription!);
+        this.isSubscribed = await Service.CheckSubscription(this.subscription!);
     }
 }

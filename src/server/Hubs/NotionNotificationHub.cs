@@ -3,21 +3,26 @@ using Microsoft.AspNetCore.SignalR;
 using NotionNotifications.Domain.Dtos;
 using NotionNotifications.Server.Handlers;
 using NotionNotifications.Server.Jobs;
-using System.Text.Json;
-using WebPush;
 
 namespace NotionNotifications.Server.Hubs;
 
 public class NotionNotificationHub(
     ILogger<NotionNotificationHub> logger,
-    PwaSubscriptionsCollectionHandler subscriptionsHandler) : Hub
+    PwaSubscriptionsHandler subscriptionsHandler) : Hub
 {
+    public async Task NotifyCurrentClient(
+        NotificationDto notification,
+        WebPushNotificationSubscriptionDto subscription)
+    {
+        await subscriptionsHandler.NotifyPwaSubscriptions(notification, subscription);
+        await Clients.Caller.SendAsync("OnNotify", notification);
+    }
 
     public async Task NotifyAllClients(
         NotificationDto dto,
         CancellationToken cToken = default)
     {
-        await NotifyPwaSubscriptions(dto);
+        await subscriptionsHandler.NotifyPwaSubscriptions(dto);
         await Clients.All.SendAsync("OnNotify", dto, cToken);
     }
 
@@ -33,35 +38,25 @@ public class NotionNotificationHub(
             delay: TimeSpan.FromMinutes(1));
     }
 
-    private async Task NotifyPwaSubscriptions(
-        NotificationDto dto)
+    public void SubscribePwaClient(
+        WebPushNotificationSubscriptionDto subscription)
     {
-        var vapidDetails = new VapidDetails(
-            subject: Environment.GetEnvironmentVariable("VAPID_SUBJECT"),
-            publicKey: Environment.GetEnvironmentVariable("VAPID_PUBLIC_KEY"),
-            privateKey: Environment.GetEnvironmentVariable("VAPID_PRIVATE_KEY"));
+        if (subscription is not null)
+            subscriptionsHandler.AddIfNotExists(subscription);
+    }
 
-        using var client = new WebPushClient();
+    public void UnsubscribePwaClient(
+        WebPushNotificationSubscriptionDto subscription)
+    {
+        if (subscription is not null)
+            subscriptionsHandler.RemoveIfExists(subscription);
+    }
 
-        foreach (var subscription in subscriptionsHandler.Subscriptions)
-        {
-            var pushSubscription = new PushSubscription(subscription.Url, subscription.P256dh, subscription.Auth);
-            var payload = JsonSerializer.Serialize(new
-            {
-                title = dto.Title,
-                message = dto.Message,
-                icon = dto.Icon,
-            });
+    public async Task IsPwaClientSubscribed(
+        WebPushNotificationSubscriptionDto subscription)
+    {
+        var isSubscribed = subscriptionsHandler.IsSubscriptionAlive(subscription);
 
-            try
-            {
-                await client.SendNotificationAsync(pushSubscription, payload, vapidDetails);
-            }
-            catch (WebPushException ex)
-            when (ex.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.Gone)
-            {
-                subscriptionsHandler.Remove(subscription);
-            }
-        }
+        await Clients.Caller.SendAsync("OnSubscriptionCheck", isSubscribed);
     }
 }

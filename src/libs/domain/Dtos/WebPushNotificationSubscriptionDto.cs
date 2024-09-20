@@ -1,10 +1,14 @@
-﻿namespace NotionNotifications.Domain.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace NotionNotifications.Domain.Dtos
 {
     public class WebPushNotificationSubscriptionDto
     {
-        public string UserId { get; set; }
+        [Required]
         public string Url { get; set; }
+        [Required]
         public string P256dh { get; set; }
+        [Required]
         public string Auth { get; set; }
     }
 }

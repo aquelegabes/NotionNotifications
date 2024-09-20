@@ -14,7 +14,7 @@ public class BadRequestExceptionException : Exception
     public BadRequestExceptionException(
         HttpResponseMessage response)
     {
-        this.Response = response;
+        Response = response;
     }
 
     public BadRequestExceptionException(
@@ -22,7 +22,7 @@ public class BadRequestExceptionException : Exception
         string message)
         : base(message)
     {
-        this.Response = response;
+        Response = response;
     }
 
     public BadRequestExceptionException(
@@ -31,7 +31,7 @@ public class BadRequestExceptionException : Exception
         System.Exception inner)
         : base(message, inner)
     {
-        this.Response = response;
+        Response = response;
     }
 
     public BadRequestExceptionException(string? message)

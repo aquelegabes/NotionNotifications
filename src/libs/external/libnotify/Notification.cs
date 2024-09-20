@@ -12,9 +12,9 @@ public unsafe sealed class Notification
         string? body = null,
         string? icon = null)
     {
-        this.Summary = summary;
-        this.Body = body;
-        this.Icon = icon;
+        Summary = summary;
+        Body = body;
+        Icon = icon;
         InitNotification();
     }
 
@@ -34,7 +34,7 @@ public unsafe sealed class Notification
     {
         Wrapper.notify_init(APP_NAME);
         _notificationPointer =
-            Wrapper.notify_notification_new(this.Summary, this.Body, this.Icon);
+            Wrapper.notify_notification_new(Summary, Body, Icon);
     }
 
     ~Notification()

@@ -1,22 +1,21 @@
 ﻿using NotionNotifications.Domain;
+using NotionNotifications.Domain.Dtos;
 
 namespace NotionNotifications.PWA
 {
     public class PwaNotificationHandler : INotificationHandler
     {
-        private readonly List<DeviceNotificationDto> _notificationOnThisDevice = [];
+        private readonly List<SimpleNotificationDto> _notificationOnThisDevice = [];
+
+        public IEnumerable<SimpleNotificationDto> Notifications => _notificationOnThisDevice.AsEnumerable();
+
+        public event EventHandler<SimpleNotificationDto> OnSend;
 
         public void Send(string title, string message, string icon = "")
         {
-            _notificationOnThisDevice.Add(new DeviceNotificationDto { Title = title, Message = message, Icon = icon });
+            var deviceNotification = new SimpleNotificationDto { Title = title, Message = message, Icon = icon };
+            _notificationOnThisDevice.Add(deviceNotification);
+            this.OnSend?.Invoke(this, deviceNotification);
         }
-    }
-
-    public class DeviceNotificationDto
-    {
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public string Icon { get; set; }
-        public DateTimeOffset NotifiedAt { get; } = DateTimeOffset.Now;
     }
 }

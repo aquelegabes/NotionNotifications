@@ -25,11 +25,11 @@ public class NotionIntegrationJobs(
 #else
             await client.AddNotification(model);
 #endif
-            var beforeDeletion = collectionHandler.RemoveIfExists(dto);
+            var beforeDeletion = collectionHandler.RemoveIfExists(new() { Notification = dto });
 
             beforeDeletion.IsNextOccurrenceSetted = true;
 
-            collectionHandler.Add(beforeDeletion);
+            collectionHandler.AddIfNotExists(beforeDeletion);
         }
     }
 
@@ -38,18 +38,22 @@ public class NotionIntegrationJobs(
     {
         dto.AlreadyNotified = true;
 
-        var model = dto.ToNotionResultModel();
+        if (dto.IntegrationId != default)
+        {
+            var model = dto.ToNotionResultModel();
 #if DEBUG
-        var response = await client.UpdateNotification(model);
+            var response = await client.UpdateNotification(model);
 #else
-        await client.UpdateNotification(model);
+            await client.UpdateNotification(model);
 #endif
-        var beforeDeletion = collectionHandler.RemoveIfExists(dto);
+        }
+
+        var beforeDeletion = collectionHandler.RemoveIfExists(new() { Notification = dto });
 
         beforeDeletion.IsFired = true;
         beforeDeletion.IsScheduled = false;
 
-        collectionHandler.Add(beforeDeletion);
+        collectionHandler.AddIfNotExists(beforeDeletion);
     }
 
     public async Task FetchAvailableNotificationsForCurrentDate()
@@ -92,7 +96,7 @@ public class NotionIntegrationJobs(
         if (string.IsNullOrWhiteSpace(jobId))
             return;
 
-        collectionHandler.Add(new()
+        collectionHandler.AddIfNotExists(new()
         {
             Notification = dto,
             IsScheduled = true,

@@ -4,44 +4,39 @@ namespace NotionNotifications.Server.Handlers;
 
 public class NotificationCollectionHandler
 {
-    private readonly List<NotificationHandle> collection;
+    private readonly List<NotificationHandle> collection = [];
 
-    public NotificationCollectionHandler()
-    {
-        collection = [];
-    }
-
-    public void Add(NotificationHandle handle)
+    public void AddIfNotExists(NotificationHandle handle)
     {
         lock (collection)
         {
+            var existing = Find(p => p.Notification.IntegrationId == handle.Notification.IntegrationId);
+
+            if (existing is not null)
+                return;
+
             collection.Add(handle);
         }
     }
 
-    public void Remove(NotificationHandle handle)
+    public NotificationHandle RemoveIfExists(NotificationHandle handle)
     {
         lock (collection)
         {
-            collection.Remove(handle);
-        }
-    }
+            var existing = Find(p => p.Notification.IntegrationId == handle.Notification.IntegrationId);
 
-    public NotificationHandle RemoveIfExists(NotificationDto dto)
-    {
-        var existing = Find(p => p.Notification.IntegrationId == dto.IntegrationId);
-
-        if (existing is null)
-        {
-            return new()
+            if (existing is null)
             {
-                Notification = dto,
-            };
+                return new()
+                {
+                    Notification = handle.Notification,
+                };
+            }
+
+            collection.Remove(existing);
+
+            return existing;
         }
-
-        Remove(existing);
-
-        return existing;
     }
 
     public NotificationHandle? Find(Predicate<NotificationHandle> predicate)

@@ -24,8 +24,6 @@ app.UseCors(POLICY_NAME);
 
 app.MapHubs();
 
-app.ConfigurePwaNotificationHandler();
-
 app.ConfigureRecurringJobs();
 
 app.Run();
