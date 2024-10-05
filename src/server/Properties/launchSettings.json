@@ -13,7 +13,6 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "hangfire",
       "applicationUrl": "http://localhost:8000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
@@ -29,12 +28,11 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "hangfire",
       "applicationUrl": "https://localhost:8007;http://localhost:8008",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "NOTION_DATABASEID": "YOUR_NOTION_DATABASEID",
-        "NOTION_API_SECRET": "yout",
+        "NOTION_API_SECRET": "YOUR_NOTION_API_SECRET",
         "NOTION_API_VERSION": "2022-06-28",
         "VAPID_SUBJECT": "YOUR_VAPID_SUBJECT",
         "VAPID_PUBLIC_KEY": "YOUR_VAPID_PUBLIC_KEY",
@@ -44,11 +42,10 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "hangfire",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "NOTION_DATABASEID": "YOUR_NOTION_DATABASEID",
-        "NOTION_API_SECRET": "yout",
+        "NOTION_API_SECRET": "YOUR_NOTION_API_SECRET",
         "NOTION_API_VERSION": "2022-06-28",
         "VAPID_SUBJECT": "YOUR_VAPID_SUBJECT",
         "VAPID_PUBLIC_KEY": "YOUR_VAPID_PUBLIC_KEY",

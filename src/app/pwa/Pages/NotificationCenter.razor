@@ -10,7 +10,7 @@
 
 <div>
     <label for="isSubscribed">Elegível para receber notificações?</label>
-    <input type="checkbox" readonly @bind="isSubscribed" disabled />
+    <input id="isSubscribed" type="checkbox" readonly @bind="isSubscribed" disabled />
 </div>
 <br />
 @if (isSubscribed)

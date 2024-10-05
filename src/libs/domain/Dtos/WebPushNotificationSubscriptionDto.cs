@@ -10,5 +10,6 @@ namespace NotionNotifications.Domain.Dtos
         public string P256dh { get; set; }
         [Required]
         public string Auth { get; set; }
+        public string ClientIp { get; set; }
     }
 }

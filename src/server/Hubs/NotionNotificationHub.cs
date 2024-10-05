@@ -1,4 +1,5 @@
 using Hangfire;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.SignalR;
 using NotionNotifications.Domain.Dtos;
 using NotionNotifications.Server.Handlers;
@@ -42,7 +43,11 @@ public class NotionNotificationHub(
         WebPushNotificationSubscriptionDto subscription)
     {
         if (subscription is not null)
+        {
+            var feature = Context.Features.Get<IHttpConnectionFeature>();
+            subscription.ClientIp = feature.RemoteIpAddress.ToString();
             subscriptionsHandler.AddIfNotExists(subscription);
+        }
     }
 
     public void UnsubscribePwaClient(

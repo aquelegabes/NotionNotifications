@@ -26,7 +26,8 @@ public static class ServerConfig
     public static void ConfigureRecurringJobs(
         this WebApplication app)
     {
-        app.UseHangfireDashboard("/hangfire");
+        app.UseHangfireDashboard("/hangfire",
+            new DashboardOptions { Authorization = [new DashboardAuthorizationFilter()] });
         RecurringJob.AddOrUpdate<NotionIntegrationJobs>(
             recurringJobId: nameof(NotionIntegrationJobs.FetchAvailableNotificationsForCurrentDate),
             methodCall: (job) => job.FetchAvailableNotificationsForCurrentDate(),

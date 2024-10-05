@@ -18,5 +18,19 @@
       "type": "image/png",
       "sizes": "192x192"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/pwa_screenshot_1.png",
+      "sizes": "320x640",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "screenshots/pwa_screenshot_1.png",
+      "sizes": "320x640",
+      "type": "image/png"
+    }
+  ],
+  "description": "Teste de aplicação PWA"
 }
