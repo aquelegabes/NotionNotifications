@@ -1,0 +1,16 @@
+<form>
+    <button type="button" (click)="openCalendar()">
+        <i>Calendar button</i>
+    </button>
+    <input
+        type="search"
+        name="query"
+        id="query"
+        placeholder="Notification keywords..." />
+    <button
+        type="submit"
+        aria-label="Search notifications button"
+        (click)="onSearch()">
+        Search
+    </button>
+</form>

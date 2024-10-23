@@ -5,6 +5,11 @@ namespace NotionNotifications.PWA
 {
     public class PwaNotificationHandler : INotificationHandler
     {
+        public PwaNotificationHandler()
+        {
+            OnSend += (obj, args) => {};
+        }
+
         private readonly List<SimpleNotificationDto> _notificationOnThisDevice = [];
 
         public IEnumerable<SimpleNotificationDto> Notifications => _notificationOnThisDevice.AsEnumerable();

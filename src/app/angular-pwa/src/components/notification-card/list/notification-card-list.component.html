@@ -1,0 +1,12 @@
+<article>
+    <header>
+        <h1>{{ listTitle }}</h1>
+    </header>
+    <div>
+        <ng-container>
+            @for(item of notificationList; track item.id) {
+                <app-notification-card-view [notification]="item" />
+            }
+        </ng-container>
+    </div>
+</article>

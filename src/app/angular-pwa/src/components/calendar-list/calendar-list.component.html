@@ -1,0 +1,22 @@
+<article>
+    <form>
+        
+    </form>
+    <table>
+        <thead>
+            @for (name of dayNames; track name) {
+            <th>{{ name }}</th>
+            }
+        </thead>
+        <tbody>
+            @for (daysRow of currentCalendar; track daysRow){
+            <tr>
+                @for (day of daysRow; track day) {
+                <td>{{ day }}</td>
+                }
+            </tr>
+            }
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</article>

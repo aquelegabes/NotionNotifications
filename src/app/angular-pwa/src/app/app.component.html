@@ -1,0 +1,14 @@
+<header>
+    <app-search-bar [toggleCalendar]="toggleCalendarDialog" />
+</header>
+
+<main class="main">
+    <dialog id="calendar-dialog" name="calendar-dialog">
+        <app-calendar-list></app-calendar-list>
+    </dialog>
+    <router-outlet />
+</main>
+
+<footer>
+    <app-navbar></app-navbar>
+</footer>
