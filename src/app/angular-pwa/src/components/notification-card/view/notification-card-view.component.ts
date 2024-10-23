@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { NotificationDatePipe } from '../../../pipes/notification-date.pipe';
+import { NotificationDatePipe } from '../../../pipes';
 import { NotificationCardModel } from '../../../types';
 import { RouterLink } from '@angular/router';
 

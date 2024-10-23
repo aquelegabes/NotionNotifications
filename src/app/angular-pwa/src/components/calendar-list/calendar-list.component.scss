@@ -1,0 +1,43 @@
+.today {
+    background-color: yellow;
+}
+
+.has-items {
+    border: 0.1rem solid black;
+}
+
+table {
+    table-layout: fixed;
+}
+
+td {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    word-wrap: break-word;
+    align-content: center;
+}
+
+td button span {
+    margin: 0;
+    padding: 0.3rem;
+    line-height: 1.35rem;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+td button span:hover {
+    background-color: rgba(128, 128, 128, 0.25);
+}
+
+td button {
+    border: none;
+    background-color: inherit;
+    width: 100%;
+}
+
+.title-case {
+    text-transform: capitalize;
+}
