@@ -1,1 +1,38 @@
-<p>detail works!</p>
+<form>
+    <div>
+        <label for="title">Title</label>
+        <input id="title" name="title" type="text" [ngModel]="model.title" />
+    </div>
+    <div>
+        <label for="date">Date</label>
+        <input
+            id="date"
+            name="date"
+            type="date"
+            [ngModel]="model.date | date : 'yyyy-MM-dd'"
+            (ngModelChange)="changeDate($event)" />
+    </div>
+    <div>
+        <label for="time">Time</label>
+        <input
+            id="time"
+            name="time"
+            type="time"
+            [ngModel]="model.date | date : 'hh:mm'"
+            (ngModelChange)="changeTime($event)" />
+    </div>
+    <div>
+        <label for="occurrence">Occurrence</label>
+        <select name="occurrence" id="occurrence" [ngModel]="model.occurrence">
+            @for (occ of availableOccurrences; track occ) {
+            <option [value]="occ">{{ occ }}</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label for="categories">Categories</label>
+    </div>
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>

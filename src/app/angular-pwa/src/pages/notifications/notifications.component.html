@@ -1,6 +1,6 @@
 @if(notificationId) {
-    <notifications-detail></notifications-detail>
+    <notifications-detail [model]="notificationModel"></notifications-detail>
 }
 @else {
-    <notifications-list></notifications-list>
+    <notifications-list [listItems]="notificationList" ></notifications-list>
 }

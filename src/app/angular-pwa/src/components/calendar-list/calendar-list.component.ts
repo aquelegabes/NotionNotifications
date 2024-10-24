@@ -3,15 +3,20 @@ import {
     Input,
     OnInit
 } from '@angular/core';
-import { DatePipe, formatDate } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms'
 
 import { uuidv4 } from '../../utils';
-import { CalendarDatePipe, DateMonthNamePipe, DateYearPipe } from '../../pipes';
+import {
+    CalendarDatePipe,
+    DateMonthNamePipe,
+    DateYearPipe
+} from '../../pipes';
 import {
     CalendarDayModel,
     NotificationCardModel
 } from '../../types';
+import { NotificationCardListComponent } from "../notification-card/list/notification-card-list.component";
 
 @Component({
     selector: 'app-calendar-list',
@@ -21,7 +26,8 @@ import {
         DateMonthNamePipe,
         DateYearPipe,
         DatePipe,
-        FormsModule
+        FormsModule,
+        NotificationCardListComponent
     ],
     templateUrl: './calendar-list.component.html',
     styleUrl: './calendar-list.component.scss'
@@ -31,28 +37,50 @@ export class CalendarListComponent implements OnInit {
     @Input() currentDate: Date = new Date(Date.now())
     @Input() items: NotificationCardModel[] = []
 
-    currentFormatedDate: string | null = null
-
     dayNames: { id: string, label: string }[] = []
     currentCalendar: CalendarDayModel[][] = []
 
-    selectedItems: NotificationCardModel[] = []
+    selectedDay: CalendarDayModel | null = null
 
     ngOnInit(): void {
-        this.items = [{
-            title: 'item 1',
-            id: uuidv4(),
-            date: new Date(Date.now()),
-            occurrence: 'Daily',
-            alreadyNotified: false
-        }]
+        // TODO: remove this
+        this.items = [
+            {
+                title: 'item 1',
+                id: uuidv4(),
+                date: new Date(new Date(Date.now()).setDate(25)),
+                occurrence: 'Daily',
+                alreadyNotified: false
+            },
+            {
+                title: 'item 2',
+                id: uuidv4(),
+                date: new Date(new Date(Date.now()).setDate(23)),
+                occurrence: 'Daily',
+                alreadyNotified: false
+            },
+            {
+                title: 'item 3',
+                id: uuidv4(),
+                date: new Date(new Date(Date.now()).setDate(23)),
+                occurrence: 'Daily',
+                alreadyNotified: false
+            },
+            {
+                title: 'item 4',
+                id: uuidv4(),
+                date: new Date(new Date(Date.now()).setDate(11)),
+                occurrence: 'Daily',
+                alreadyNotified: false
+            },
+        ]
         this.dayNames = this.getDayNames(this.locale)
         this.currentCalendar = this.generateCalendar()
     }
 
     changeDate(evt: any) {
         const [year, month, day] = evt.split('-')
-        this.currentDate = new Date(year,month-1,day)
+        this.currentDate = new Date(year, month - 1, day)
         this.currentCalendar = this.generateCalendar()
     }
 
@@ -77,11 +105,11 @@ export class CalendarListComponent implements OnInit {
         this.currentCalendar = this.generateCalendar();
     }
 
-    openModalItems(items: NotificationCardModel[]) {
-        if (items?.length == 0)
+    openModal(day: CalendarDayModel) {
+        if (day.items?.length == 0)
             return;
 
-        this.selectedItems = items;
+        this.selectedDay = day;
         const dialog: any = document.getElementById('item-content');
         dialog.showModal();
     }

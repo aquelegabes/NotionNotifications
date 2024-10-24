@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { NotificationCardListComponent } from '../../../components/notification-card';
+import { NotificationCardModel } from '../../../types';
 
 @Component({
   selector: 'notifications-list',
@@ -9,5 +10,5 @@ import { NotificationCardListComponent } from '../../../components/notification-
   styleUrl: './list.component.scss'
 })
 export class PageNotificationsListComponent {
-
+  @Input() listItems: NotificationCardModel[] = []
 }

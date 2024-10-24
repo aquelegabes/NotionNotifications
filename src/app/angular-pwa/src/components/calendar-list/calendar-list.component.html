@@ -59,7 +59,7 @@
             <tr>
                 @for (day of daysRow; track day.id) {
                 <td>
-                    <button (click)="openModalItems(day.items)">
+                    <button (click)="openModal(day)">
                         <span [className]="day.cssClasses">{{
                             day.label
                         }}</span>
@@ -74,11 +74,10 @@
 </article>
 
 <dialog name="item-content" id="item-content">
-    <ul>
-        @for(item of selectedItems; track item.id) {
-        <li>{{ item.title }}</li>
-        }
-    </ul>
+    <app-notification-card-list
+        [items]="selectedDay?.items ?? []"
+        [listTitle]="selectedDay?.date | date : 'dd/MM/yyyy'">
+    </app-notification-card-list>
     <form method="dialog">
         <button>ok</button>
     </form>
