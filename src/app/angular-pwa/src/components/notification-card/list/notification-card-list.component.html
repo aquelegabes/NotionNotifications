@@ -1,12 +1,14 @@
 <article>
-    <header>
-        <h1>{{ listTitle }}</h1>
-    </header>
-    <div>
-        <ng-container>
-            @for(item of items; track item.id) {
-                <app-notification-card-view [notification]="item" />
-            }
-        </ng-container>
-    </div>
+  <header>
+    <h1>{{ listTitle }}</h1>
+  </header>
+  <div>
+    <ng-container>
+      @for(item of notifications; track item.id) {
+      <app-notification-card-view
+        [notification]="item"
+        (onDeleteNotification)="removeNotificationFromList($event)" />
+      }
+    </ng-container>
+  </div>
 </article>

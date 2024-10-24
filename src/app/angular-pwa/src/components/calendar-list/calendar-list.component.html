@@ -75,7 +75,7 @@
 
 <dialog name="item-content" id="item-content">
     <app-notification-card-list
-        [items]="selectedDay?.items ?? []"
+        [notifications]="selectedDay?.items ?? []"
         [listTitle]="selectedDay?.date | date : 'dd/MM/yyyy'">
     </app-notification-card-list>
     <form method="dialog">

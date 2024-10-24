@@ -1,1 +1,23 @@
-<p>settings works!</p>
+<article>
+  <header>
+    <h1>Settings</h1>
+  </header>
+  <form>
+    <div>
+        <label for="timezone">Timezone</label>
+        <select id="timezone" name="timezone" [ngModel]="model.timezone">
+            @for(timezone of timezones; track timezone){
+                <option [value]="timezone">{{ timezone }}</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label for="locale">Locale</label>
+        <select id="locale" name="locale" [ngModel]="model.locale">
+          @for (locale of locales; track locale.localeCode){
+            <option [value]="locale.localeCode">{{ locale.localeName }}</option>
+          }
+        </select>
+    </div>
+  </form>
+</article>

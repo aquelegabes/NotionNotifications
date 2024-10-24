@@ -1,4 +1,4 @@
 <ng-container>
-    <app-notification-card-list listTitle="Upcoming" />
-    <app-notification-card-list listTitle="Latest notifications" />
+    <app-notification-card-list listTitle="Upcoming notifications" [notifications]="upcomingNotifications" />
+    <app-notification-card-list listTitle="Latest notifications" [notifications]="latestNotifications" />
 </ng-container>

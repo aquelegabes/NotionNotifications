@@ -1,26 +1,23 @@
 <article class="container">
-    <aside class="container">
-        <button
-            aria-label="Check or uncheck a notification"
-            (click)="onCheckNotification()">
-            <i
-                [className]="'icon icon-check-' + notification.alreadyNotified"
-                >{{ notification.alreadyNotified }}</i
-            >
-        </button>
-    </aside>
-    <section class="container">
-        <a [routerLink]="['/notifications', notification.id]">
-            <h1>{{ notification.title }}</h1>
-            <p>{{ notification.occurrence }}</p>
-            <p>{{ notification.date | notificationDate }}</p>
-        </a>
-    </section>
-    <aside class="container">
-        <button
-            aria-label="Delete a notification"
-            (click)="onRemoveNotification()">
-            Delete a notification
-        </button>
-    </aside>
+  <aside class="container">
+    <button
+      aria-label="Check or uncheck a notification"
+      (click)="onCheckNotification()">
+      <i [className]="'icon icon-check-' + notification.alreadyNotified">
+        {{ notification.alreadyNotified }}
+      </i>
+    </button>
+  </aside>
+  <section class="container">
+    <a [routerLink]="['/notifications', notification.id]">
+      <h1>{{ notification.title }}</h1>
+      <p>{{ notification.occurrence }}</p>
+      <p>{{ notification.date | notificationDate }}</p>
+    </a>
+  </section>
+  <aside class="container">
+    <button aria-label="Delete a notification" (click)="onRemoveNotification()">
+      Delete a notification
+    </button>
+  </aside>
 </article>

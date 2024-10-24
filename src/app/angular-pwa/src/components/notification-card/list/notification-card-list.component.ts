@@ -11,23 +11,17 @@ import { NotificationCardViewComponent } from "../view/notification-card-view.co
 })
 export class NotificationCardListComponent implements OnInit {
   @Input() listTitle: string | null = 'List title'
-  @Input() items: NotificationCardModel[] = []
-
-  //TODO: remove this
-  notificationList: NotificationCardModel[] = [
-    { alreadyNotified: true, date: new Date(Date.now()), id: '1', title: 'Notification 1', occurrence: 'Daily' },
-    { alreadyNotified: true, date: new Date(Date.now()), id: '2', title: 'Notification 2', occurrence: 'Daily' },
-    { alreadyNotified: true, date: new Date(Date.now()), id: '3', title: 'Notification 3', occurrence: 'Daily' },
-    { alreadyNotified: true, date: new Date(Date.now()), id: '4', title: 'Notification 4', occurrence: 'Daily' },
-  ]
+  @Input() notifications: NotificationCardModel[] = []  
 
   constructor() {
 
   }
 
   ngOnInit(): void {
-    //TODO: remove this
-    if (this.items.length == 0)
-      this.items = this.notificationList
+
+  }
+
+  removeNotificationFromList(notification: NotificationCardModel) {
+    this.notifications = this.notifications.filter(not => notification.id != not.id)
   }
 }
